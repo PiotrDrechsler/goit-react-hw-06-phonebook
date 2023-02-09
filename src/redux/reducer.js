@@ -1,15 +1,21 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { addNewContact, deleteContact, setFilter } from './actions';
 
-const contactsInitialState = [];
+const storedContacts = localStorage.getItem('contacts');
+const contactsInitialState = storedContacts ? JSON.parse(storedContacts) : [];
 const filterInitialState = '';
 
 export const contactsReducer = createReducer(contactsInitialState, {
   [addNewContact]: (state, action) => {
-    return [...state, action.payload];
+    const newState = [...state, action.payload];
+    localStorage.setItem('contacts', JSON.stringify(newState));
+    return newState;
   },
+
   [deleteContact]: (state, action) => {
-    return state.filter(contact => contact.id !== action.payload);
+    const newState = state.filter(contact => contact.id !== action.payload);
+    localStorage.setItem('contacts', JSON.stringify(newState));
+    return newState;
   },
 });
 
